@@ -93,7 +93,7 @@ app.get('/deleteAll', function(req, res) {
 //delete an item from the database
 app.get("/delete/:id", function(req, res){
   var id = req.params.id;
-  db.scrapedData.remove({_id:id}, function(err, doc){
+  db.scrapedData.remove({_id:id}, function(err, dbResults){
     if(!err){
       res.send("success");
     }

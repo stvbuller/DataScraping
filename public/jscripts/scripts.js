@@ -4,7 +4,6 @@ $("#scrapedData").click(function(e){
     $.getJSON("/scrape", function() {
       $("tbody").empty();
     });
-
     $.getJSON("/getItems", function(response) {
       $("tbody").empty();
       response.forEach(function(scrapedData) {
@@ -13,14 +12,14 @@ $("#scrapedData").click(function(e){
         newTr += "<td>" + scrapedData.link + "</td>";
         newTr += "</tr>";
         $("tbody").append(newTr);
+        var textArea = '<textarea id="note"></textarea>';
+        $("tbody").append(textArea);
         var newButton1 = "<button type='button' name='button' id='submitItem'>Submit</button>";
         $("tbody").append(newButton1);
         var newButton2 = "<button type='button' name='button' id='deleteItem'>Delete</button>";
         $("tbody").append(newButton2);
-
       });
     });
-
   });
 
 $("#getItems").click(function(e){
@@ -32,11 +31,12 @@ $("#getItems").click(function(e){
         newTr += "<td>" + scrapedData.link + "</td>";
         newTr += "</tr>";
         $("tbody").append(newTr);
+        var textArea = '<textarea id="note"></textarea>';
+        $("tbody").append(textArea);
         var newButton1 = "<button type='button' name='button' id='submitItem'>Submit</button>";
         $("tbody").append(newButton1);
-        var newButton2 = "<button type='button' name='button' id='deleteItem'>Delete</button>";
+        var newButton2 = '<button type="button" name="button" id="deleteItem">Delete</button>';
         $("tbody").append(newButton2);
-
       });
     });
   });
@@ -48,7 +48,11 @@ $("#deleteAll").click(function(e){
   });
 
 $("#deleteItem").click(function(e){
-    $.getJSON("/delete/:id", function(response) {
+    alert("the button is clicked");
+    var selected = $(this);
+    console.log(" the id is " + selected.data('id'));
+
+    $.getJSON("/delete/" + selected.data('id'), function(response) {
       $("tbody").empty();
       // response.forEach(function(scrapedData) {
       //   var newTr = "<tr>";
