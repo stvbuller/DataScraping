@@ -31,16 +31,12 @@ $("#getItems").click(function(e){
       newTr += "<td>" + scrapedData.link + "</td>";
       newTr += "</tr>";
       $("tbody").append(newTr);
-      // var textArea = '<textarea id="note"></textarea>';
-      // $("tbody").append(textArea);
       var newTextForm = '<form action="/submit" method="post">'
       newTextForm += '<input type="text" name="title" placeholder="Title">'
       newTextForm += '<textarea type="text" name="body">Comments Here Please!</textarea>'
       newTextForm +=  '<input type="submit">'
       newTextForm += '</form>'
       $("tbody").append(newTextForm);
-      // var newButton1 = "<button type='button' name='button' id='submitItem'>Submit</button>";
-      // $("tbody").append(newButton1);
       var newButton2 = '<button type="button" name="button" id="deleteItem">Delete</button>';
       $("tbody").append(newButton2);
     });
@@ -61,13 +57,6 @@ $("#deleteItem").click(function(e){
 
   });
 });
-
-$("#submitItem").click(function(e){
-    alert("the button is clicked");
-
-});
-
-
 
 
 }); //end of document.ready
