@@ -43,6 +43,7 @@ $(document).on('click', '.deleteItem', function(e){
 
 
     });
+
     $.getJSON("/getItems", function(response) {
     $("tbody").empty();
     response.forEach(function(scrapedData) {
@@ -51,8 +52,8 @@ $(document).on('click', '.deleteItem', function(e){
       newTr += "<td>" + scrapedData.link + "</td>";
       newTr += "</tr>";
       $("tbody").append(newTr);
-      var newTextForm = '<form action="/submit" method="post">'
-      newTextForm += '<input type="text" name="title" placeholder="Title" data-id="' +scrapedData._id + '">'
+      var newTextForm = '<form action="/submit/'+ scrapedData._id + '"  method="post">'
+      newTextForm += '<input type="text" name="title" placeholder="Title">'
       newTextForm += '<textarea type="text" name="body">Comments Here Please!</textarea>'
       newTextForm +=  '<input type="submit">'
       newTextForm += '</form>'
@@ -61,6 +62,7 @@ $(document).on('click', '.deleteItem', function(e){
       $("tbody").append(newButton2);
     });
   });
+
 });
 
 
