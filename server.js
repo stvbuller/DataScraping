@@ -33,6 +33,10 @@ app.set('view engine', 'handlebars');
 var mongoose = require('mongoose');
 
 //mongoose database configuration
+//for deployment to heroku
+//mongoose.connect('mongodb://s.buller@comcast.net:<password>@ds011389.mlab.com:11389/heroku_4l161lq4');
+
+//for local deployment
 mongoose.connect('mongodb://localhost/scraper');
 var db = mongoose.connection;
 
@@ -46,15 +50,6 @@ db.once('open', function() {
 //require mongoose schemas
 var ScrapedData = require('./models/scrapedDataModel.js');
 var Note = require('./models/noteModel.js');
-
-//mongojs database configuration
-// var mongojs = require('mongojs');
-// var databaseUrl = "scraper";
-// var collections = ["scrapedData"];
-// var db = mongojs(databaseUrl, collections);
-// db.on('error', function(err) {
-//   console.log('Database Error:', err);
-// });
 
 //routes
 app.get('/', function(req, res) {
@@ -84,17 +79,6 @@ app.get('/scrape', function(req, res) {
             console.log(doc)    //res.send(doc);
           }
         });
-        //mongojs save data
-        // db.scrapedData.save({
-        //   title: title,
-        //   link: link
-        // }, function(err, saved) {
-        //   if (err) {
-        //     console.log(err);
-        //   } else {
-        //     console.log(saved);
-        //   }
-        // });   //end of mongo js save data
       }
     });
   });
@@ -111,14 +95,6 @@ app.get('/getItems', function(req, res) {
       res.send(dbResults);
     }
   });
-  //mongojs find data
-  // db.scrapedData.find(function (err, dbResults) {
-  // dbResults is an array of all the documents in scrapedData
-  //   if(err) {
-  //     throw err;
-  //   }
-  //   res.json(dbResults);
-  // })
 });
 
 //delete all data from the database
@@ -131,14 +107,6 @@ app.get('/deleteAll', function(req, res) {
       res.send(dbResults);
     }
   });
-  //mongojs drop collection
-  // db.scrapedData.drop(function (err, dbResults) {
-  // // dbResults is an array of all the documents in scrapedData
-  //   if(err) {
-  //     throw err;
-  //   }
-  //   res.json(dbResults);
-  // })
 });
 
 //delete an item from the database
