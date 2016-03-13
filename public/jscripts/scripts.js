@@ -37,7 +37,7 @@ $("#getItems").click(function(e){
       newTextForm +=  '<input type="submit">'
       newTextForm += '</form>'
       $("tbody").append(newTextForm);
-      var newButton2 = '<button type="button" name="button" id="deleteItem">Delete</button>';
+      var newButton2 = '<button type="button" name="button" id="deleteItem" data-id="' +scrapedData._id + '">Delete</button>';
       $("tbody").append(newButton2);
     });
   });
@@ -53,7 +53,7 @@ $("#deleteItem").click(function(e){
     alert("the button is clicked");
     var selected = $(this);
     console.log(" the id is " + selected.data('id'));
-    $.getJSON("/delete/" + selected.id, function() {
+    $.getJSON("/delete/" + selected.id('id'), function() {
 
   });
 });
