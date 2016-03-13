@@ -16,8 +16,8 @@ $("#getItems").click(function(e){
       newTr += "<td>" + scrapedData.link + "</td>";
       newTr += "</tr>";
       $("tbody").append(newTr);
-      var newTextForm = '<form action="/submit" method="post">'
-      newTextForm += '<input type="text" name="title" placeholder="Title" data-id="' +scrapedData._id + '">'
+      var newTextForm = '<form action="/submit/'+ scrapedData._id + '"  method="post">'
+      newTextForm += '<input type="text" name="title" placeholder="Title">'
       newTextForm += '<textarea type="text" name="body">Comments Here Please!</textarea>'
       newTextForm +=  '<input type="submit">'
       newTextForm += '</form>'

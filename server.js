@@ -123,9 +123,9 @@ app.get("/delete/:id", function(req, res){
   });
 });
 
-app.post('/submit', function(req, res) {
+app.post('/submit/:id', function(req, res) {
   var newNote = new Note(req.body);
-
+  var id = req.params.id;
   //Save the new note
     newNote.save(function(err, doc) {
       if (err) {
@@ -133,7 +133,7 @@ app.post('/submit', function(req, res) {
       } else {
 
     //Find the scraped data item and push the new note id into the item's notes array
-      ScrapedData.findOneAndUpdate({}, {$push: {'notes': doc._id}}, {new: true}, function(err, doc) {
+      ScrapedData.findOneAndUpdate({_id:id}, {$push: {'notes': doc._id}}, {new: true}, function(err, doc) {
         if (err) {
           res.send(err);
         } else {
