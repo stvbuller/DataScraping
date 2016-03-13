@@ -8,9 +8,13 @@ var request = require('request');
 //cheerio setup
 var cheerio = require('cheerio');
 
+morgan setup
+var logger = require('morgan');
+
 //middleware init
 app.use("/jscripts", express.static("public/jscripts"));
 app.use("/css", express.static("public/css"));
+app.use(logger('dev'));
 
 //body-parser setup
 var bodyParser = require('body-parser');
@@ -25,43 +29,71 @@ app.engine('handlebars', expressHandlebars({
 }));
 app.set('view engine', 'handlebars');
 
-//database configuration
-var mongojs = require('mongojs');
-var databaseUrl = "scraper";
-var collections = ["scrapedData"];
-var db = mongojs(databaseUrl, collections);
+//mongoose setup
+var mongoose = require('mongoose');
+
+//mongoose database configuration
+mongoose.connect('mongodb://localhost/scraper');
+var db = mongoose.connection;
+
 db.on('error', function(err) {
-  console.log('Database Error:', err);
+  console.log('Mongoose Error: ', err);
 });
+db.once('open', function() {
+  console.log('Mongoose connection successful.');
+});
+
+//require mongoose schemas
+var ScrapedData = require('./models/scrapedDataModel.js');
+
+//mongojs database configuration
+// var mongojs = require('mongojs');
+// var databaseUrl = "scraper";
+// var collections = ["scrapedData"];
+// var db = mongojs(databaseUrl, collections);
+// db.on('error', function(err) {
+//   console.log('Database Error:', err);
+// });
 
 //routes
 app.get('/', function(req, res) {
   res.sendFile(process.cwd() + "/views/index.html");
+  //res.sendfile('./views/index.html');
 });
 
 //scrape data and save to database
 app.get('/scrape', function(req, res) {
   request('https://www.reddit.com/', function (error, response, html) {
     var $ = cheerio.load(html);
-    //var result = [];
+    var result = [];
     $(".title").each(function(i, element){
 
-      //scrape some stuff, put it in an object and add it to the result array
+      //scrape some stuff, put it in an object
 
       var title = $(this).text();
       var link = $(element).children().attr('href');
 
       if (title && link) {
-        db.scrapedData.save({
-          title: title,
-          link: link
-        }, function(err, saved) {
+        var newScrapedData = new ScrapedData({title:title, link:link});
+        //mongoose save data
+        newScrapedData.save(function(err, doc) {
           if (err) {
-            console.log(err);
+            console.log(err)    //res.send(err);
           } else {
-            console.log(saved);
+            console.log(doc)    //res.send(doc);
           }
         });
+        //mongojs save data
+        // db.scrapedData.save({
+        //   title: title,
+        //   link: link
+        // }, function(err, saved) {
+        //   if (err) {
+        //     console.log(err);
+        //   } else {
+        //     console.log(saved);
+        //   }
+        // });   //end of mongo js save data
       }
     });
   });
@@ -70,30 +102,48 @@ app.get('/scrape', function(req, res) {
 
 //get data from the database
 app.get('/getItems', function(req, res) {
-  db.scrapedData.find(function (err, dbResults) {
-  // dbResults is an array of all the documents in scrapedData
-    if(err) {
-      throw err;
+  //mongoose find data
+  ScrapedData.find({}, function(err, dbResults) {
+    if (err) {
+      res.send(err);
+    } else {
+      res.send(dbResults);
     }
-    res.json(dbResults);
-  })
+  });
+  //mongojs find data
+  // db.scrapedData.find(function (err, dbResults) {
+  // dbResults is an array of all the documents in scrapedData
+  //   if(err) {
+  //     throw err;
+  //   }
+  //   res.json(dbResults);
+  // })
 });
 
-//delete al data from the database
+//delete all data from the database
 app.get('/deleteAll', function(req, res) {
-  db.scrapedData.drop(function (err, dbResults) {
-  // dbResults is an array of all the documents in scrapedData
-    if(err) {
-      throw err;
+  //mongoose drop collection
+  ScrapedData.remove({}, function(err, dbResults) {
+    if (err) {
+      res.send(err);
+    } else {
+      res.send(dbResults);
     }
-    res.json(dbResults);
-  })
+  });
+  //mongojs drop collection
+  // db.scrapedData.drop(function (err, dbResults) {
+  // // dbResults is an array of all the documents in scrapedData
+  //   if(err) {
+  //     throw err;
+  //   }
+  //   res.json(dbResults);
+  // })
 });
 
 //delete an item from the database
 app.get("/delete/:id", function(req, res){
   var id = req.params.id;
-  db.scrapedData.remove({_id:id}, function(err, dbResults){
+  ScrapedData.remove({_id:id}, function(err, dbResults){
     if(!err){
       res.send("success");
     }
