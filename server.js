@@ -45,6 +45,7 @@ db.once('open', function() {
 
 //require mongoose schemas
 var ScrapedData = require('./models/scrapedDataModel.js');
+var Note = require('./models/noteModel.js');
 
 //mongojs database configuration
 // var mongojs = require('mongojs');
@@ -149,6 +150,28 @@ app.get("/delete/:id", function(req, res){
     }
     else{
       res.send("fail");
+    }
+  });
+});
+
+app.post('/submit', function(req, res) {
+
+  var newNote = new Note(req.body);
+
+//Save the new note
+  newNote.save(function(err, doc) {
+    if (err) {
+      res.send(err);
+    } else {
+
+//Find the scraped data item and push the new note id into the item's notes array
+      ScrapedData.findOneAndUpdate({}, {$push: {'notes': doc._id}}, {new: true}, function(err, doc) {
+        if (err) {
+          res.send(err);
+        } else {
+          console.log(doc)   //res.send(doc);
+        }
+      });
     }
   });
 });
