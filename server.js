@@ -112,12 +112,13 @@ app.get('/deleteAll', function(req, res) {
 //delete an item from the database
 app.get("/delete/:id", function(req, res){
   var id = req.params.id;
+  console.log(req.params.id);
   ScrapedData.remove({_id:id}, function(err, dbResults){
     if(!err){
       res.send("success");
     }
     else{
-      res.send("fail");
+      res.send(dbResults);
     }
   });
 });
