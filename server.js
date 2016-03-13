@@ -8,7 +8,7 @@ var request = require('request');
 //cheerio setup
 var cheerio = require('cheerio');
 
-morgan setup
+//morgan setup
 var logger = require('morgan');
 
 //middleware init
