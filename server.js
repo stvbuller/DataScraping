@@ -99,7 +99,15 @@ app.get('/getItems', function(req, res) {
 
 //delete all data from the database
 app.get('/deleteAll', function(req, res) {
-  //mongoose drop collection
+  //mongoose remove data from ScrapedData and Note collections
+  Note.remove({}, function(err, dbResults) {
+    if (err) {
+      res.send(err);
+    } else {
+      //res.send(dbResults);
+    }
+  });
+
   ScrapedData.remove({}, function(err, dbResults) {
     if (err) {
       res.send(err);
